@@ -1,8 +1,11 @@
 package urlshort
 
 import (
+	"fmt"
 	"net/http"
 )
+
+// https://medium.com/@matryer/the-http-handler-wrapper-technique-in-golang-updated-bc7fbcffa702
 
 // MapHandler will return an http.HandlerFunc (which also
 // implements http.Handler) that will attempt to map any
@@ -12,12 +15,21 @@ import (
 // http.Handler will be called instead.
 func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.HandlerFunc {
 	//	TODO: Implement this...
-	return nil
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+		fmt.Printf("found path: %s", path)
+		if dest, ok := pathsToUrls[path]; ok {
+			fmt.Printf("Redirecting %s to %s\n", path, dest)
+			http.Redirect(w, r, dest, 301)
+			return
+		}
+		fallback.ServeHTTP(w, r)
+	})
 }
 
 // YAMLHandler will parse the provided YAML and then return
 // an http.HandlerFunc (which also implements http.Handler)
-// that will attempt to map any paths to their corresponding
+// that will attempt to map any pa,ths to their corresponding
 // URL. If the path is not provided in the YAML, then the
 // fallback http.Handler will be called instead.
 //
