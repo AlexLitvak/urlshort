@@ -13,6 +13,8 @@ import (
 // that each key in the map points to, in string format).
 // If the path is not provided in the map, then the fallback
 // http.Handler will be called instead.
+
+//handle the map
 func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.HandlerFunc {
 	//	TODO: Implement this...
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
